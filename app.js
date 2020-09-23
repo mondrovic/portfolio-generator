@@ -1,14 +1,17 @@
-// takes argument and gets rid of node install location && app location
+// adds fs to write files
+fs = require("fs");
+const generatePage = require("./src/page-template");
+
+// gets arguments and filters out uneccesary information
 const profileDataArgs = process.argv.slice(2, process.argv.length);
 
-// uses arrow function to display all array items
-const printProfileData = (profileDataArr) => {
-  for (let i = 0; i < profileDataArr.length; i += 1) {
-    console.log(profileDataArr[i]);
-  }
-  console.log("==================");
+// creates variables for data sent through CLI. Can assign both variables in one line
+const [name, github] = profileDataArgs;
 
-  profileDataArr.forEach((profileItem) => console.log(profileItem));
-};
-
-printProfileData(profileDataArgs);
+// writes file to system. (filename, function, error)
+fs.writeFile("index.html", generatePage(name, github), (err) => {
+  if (err) throw err;
+  console.log(
+    "Portfolio complete! Check out the index.html to see the output!"
+  );
+});
