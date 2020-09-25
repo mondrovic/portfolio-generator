@@ -1,21 +1,6 @@
 const inquirer = require("inquirer");
-
-/*
-// adds fs to write files
-fs = require("fs");
+const fs = require("fs");
 const generatePage = require("./src/page-template");
-
-// creates variables for data sent through CLI. Can assign both variables in one line
-const [name, github] = profileDataArgs;
-
-// writes file to system. (filename, function, error)
-fs.writeFile("index.html", generatePage(name, github), (err) => {
-  if (err) throw err;
-  console.log(
-    "Portfolio complete! Check out the index.html to see the output!"
-  );
-});
-*/
 
 // puts inquirer prompt in function and asks user for information
 const promptUser = () => {
@@ -153,7 +138,7 @@ const promptProject = (portfolioData) => {
       // takes a promise from inquirer gathered data then pushes it to created array
       .then((projectData) => {
         portfolioData.projects.push(projectData);
-        if (projectData.confirmAddProjects) {
+        if (projectData.confirmAddProject) {
           return promptProject(portfolioData);
         } else {
           return portfolioData;
@@ -162,8 +147,18 @@ const promptProject = (portfolioData) => {
   );
 };
 
+/*
+promptUser() collects data about user
+promptProject() collects data bout projects
+takes promptProjects() data generates HTML based on information
+generatePage() is the variable from the template on page-template.js
+*/
 promptUser()
   .then(promptProject)
   .then((portfolioData) => {
-    console.log(portfolioData);
+    const pageHTML = generatePage(portfolioData);
+    fs.writeFile("./index.html", pageHTML, (err) => {
+      if (err) throw err;
+      console.log("Page created! Check out the index HTML in this directory");
+    });
   });
