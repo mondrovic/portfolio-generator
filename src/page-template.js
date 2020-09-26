@@ -59,7 +59,6 @@ const generateProjects = (projectsArr) => {
 module.exports = (templateData) => {
   // creates a variable by destructuring portfolioData object and assigns REST of objects to a header
   const { projects, about, ...header } = templateData;
-  console.log(header.name);
 
   return `
   <!DOCTYPE html>
