@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
-const fs = require("fs");
-const generatePage = require("./src/page-template");
+const generatePage = require("./src/page-template.js");
+const { writeFile, copyFile } = require("./utils/generate-site.js");
 
 // puts inquirer prompt in function and asks user for information
 const promptUser = () => {
@@ -150,15 +150,26 @@ const promptProject = (portfolioData) => {
 /*
 promptUser() collects data about user
 promptProject() collects data bout projects
-takes promptProjects() data generates HTML based on information
-generatePage() is the variable from the template on page-template.js
+promptProject() passes both user and project data to the generatePage() function
+generatePage() passes structured information off to write to HTML with writeFile(pageHTML)
+takes the promise and passes response to console; then copies the css to the dist folder if no errors are thrown
+repeats the above process with the copy file
 */
 promptUser()
   .then(promptProject)
   .then((portfolioData) => {
-    const pageHTML = generatePage(portfolioData);
-    fs.writeFile("./index.html", pageHTML, (err) => {
-      if (err) throw err;
-      console.log("Page created! Check out the index HTML in this directory");
-    });
+    return generatePage(portfolioData);
+  })
+  .then((pageHTML) => {
+    return writeFile(pageHTML);
+  })
+  .then((writeFileResponse) => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then((copyFileResponse) => {
+    console.log(copyFileResponse);
+  })
+  .catch((err) => {
+    console.log(err);
   });
